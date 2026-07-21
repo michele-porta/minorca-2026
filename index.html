@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Itinerario di 8 giorni a Minorca (Luglio 2026). Dettagli hotel, spiagge giornaliere, noleggio scooter e mappa interattiva.">
+    <title>Minorca 2026 | Il Mio Itinerario di Viaggio</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    
+    <!-- Lucide Icons (CDN) -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- Leaflet.js CSS & JS for Interactive Map -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+    <!-- Custom Stylesheet -->
+    <link rel="stylesheet" href="styles.css?v=4">
+</head>
+<body>
+    <!-- Lock Screen Overlay -->
+    <div id="lock-screen" class="lock-screen">
+        <div class="lock-card">
+            <div class="lock-icon"><i data-lucide="lock"></i></div>
+            <h2>Minorca 2026</h2>
+            <p>Inserisci il PIN per accedere all'itinerario riservato</p>
+            <form id="lock-form" onsubmit="handleUnlock(event)">
+                <input type="password" id="pin-input" class="pin-input" placeholder="Inserisci il codice di accesso" autocomplete="off" autofocus required>
+                <button type="submit" class="unlock-btn">
+                    <span>Sblocca Itinerario</span>
+                    <i data-lucide="key-round"></i>
+                </button>
+            </form>
+            <div id="lock-error" class="lock-error">PIN non corretto. Riprova!</div>
+        </div>
+    </div>
+    <!-- Theme Toggle -->
+    <button id="theme-toggle" class="theme-toggle" aria-label="Cambia tema">
+        <i data-lucide="moon" id="theme-icon"></i>
+    </button>
+
+    <!-- Header / Hero Section -->
+    <header class="hero">
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <span class="hero-badge"><i data-lucide="calendar"></i> 23 - 30 Luglio 2026</span>
+            <h1>Menorca</h1>
+            <p class="hero-subtitle">Il tuo itinerario su due ruote tra calette nascoste e tramonti mozzafiato</p>
+            
+            <!-- Quick Info Cards -->
+            <div class="quick-info-grid">
+                <div class="info-card">
+                    <i data-lucide="hotel" class="card-icon"></i>
+                    <div class="card-text">
+                        <h3>Hotel RV Club Menorca</h3>
+                        <p>Cala'n Blanes (Mezza Pensione)</p>
+                    </div>
+                </div>
+                <div class="info-card">
+                    <i data-lucide="bike" class="card-icon"></i>
+                    <div class="card-text">
+                        <h3>Scooter 125cc</h3>
+                        <p>Dal 24/07 al 30/07 ore 12:00</p>
+                    </div>
+                </div>
+                <div class="info-card">
+                    <i data-lucide="plane-landing" class="card-icon"></i>
+                    <div class="card-text">
+                        <h3>Voli & Shuttle</h3>
+                        <p>Arrivo: 17:30 | Ritorno: 18:00 (Shuttle incluso)</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <a href="#itinerary-section" class="scroll-down" aria-label="Scorri giù">
+            <i data-lucide="arrow-down"></i>
+        </a>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="container">
+        <!-- Travel Overview / Progress Bar -->
+        <section class="overview-section">
+            <div class="overview-grid">
+                <div class="overview-progress">
+                    <div class="section-header">
+                        <h2>A Colpo d'Occhio</h2>
+                        <p>Monitora i tuoi progressi di viaggio e le spiagge visitate</p>
+                    </div>
+                    
+                    <div class="progress-container">
+                        <div class="progress-bar-wrapper">
+                            <div class="progress-bar" id="trip-progress"></div>
+                        </div>
+                        <div class="progress-stats">
+                            <span>Giorni completati: <strong id="completed-days-count">0</strong>/8</span>
+                            <span>Spiagge scoperte: <strong id="visited-beaches-count">0</strong>/7</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="overview-wind">
+                    <div class="section-header">
+                        <h2>Consulente Vento (Regola di Minorca)</h2>
+                        <p>Seleziona la direzione del vento di oggi per ottimizzare le spiagge</p>
+                    </div>
+                    <div class="wind-selector-container">
+                        <div class="wind-buttons">
+                            <button class="wind-btn active" data-wind="none" id="btn-wind-none">
+                                <i data-lucide="wind"></i>
+                                <span>Debole / Altro</span>
+                            </button>
+                            <button class="wind-btn" data-wind="north" id="btn-wind-north">
+                                <i data-lucide="arrow-down"></i>
+                                <span>Vento da NORD (Tramontana)</span>
+                            </button>
+                            <button class="wind-btn" data-wind="south" id="btn-wind-south">
+                                <i data-lucide="arrow-up"></i>
+                                <span>Vento da SUD (Scirocco/Ostro)</span>
+                            </button>
+                        </div>
+                        <div class="wind-recommendation-box" id="wind-recommendation-box">
+                            Seleziona una direzione del vento per ricevere consigli in tempo reale.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Itinerary Map & Timeline split -->
+        <section id="itinerary-section" class="itinerary-grid">
+            
+            <!-- Timeline (Left column) -->
+            <div class="timeline-container">
+                <div class="section-header">
+                    <h2>Programma Giorno per Giorno</h2>
+                    <p>Seleziona un giorno per vedere i dettagli e visualizzarlo sulla mappa</p>
+                </div>
+                
+                <!-- Day Selector Tabs -->
+                <div class="day-tabs" role="tablist">
+                    <button class="day-tab active" data-day="1" role="tab" aria-selected="true" id="tab-day-1">
+                        <span class="day-num">23</span>
+                        <span class="day-name">Lug</span>
+                    </button>
+                    <button class="day-tab" data-day="2" role="tab" aria-selected="false" id="tab-day-2">
+                        <span class="day-num">24</span>
+                        <span class="day-name">Lug</span>
+                    </button>
+                    <button class="day-tab" data-day="3" role="tab" aria-selected="false" id="tab-day-3">
+                        <span class="day-num">25</span>
+                        <span class="day-name">Lug</span>
+                    </button>
+                    <button class="day-tab" data-day="4" role="tab" aria-selected="false" id="tab-day-4">
+                        <span class="day-num">26</span>
+                        <span class="day-name">Lug</span>
+                    </button>
+                    <button class="day-tab" data-day="5" role="tab" aria-selected="false" id="tab-day-5">
+                        <span class="day-num">27</span>
+                        <span class="day-name">Lug</span>
+                    </button>
+                    <button class="day-tab" data-day="6" role="tab" aria-selected="false" id="tab-day-6">
+                        <span class="day-num">28</span>
+                        <span class="day-name">Lug</span>
+                    </button>
+                    <button class="day-tab" data-day="7" role="tab" aria-selected="false" id="tab-day-7">
+                        <span class="day-num">29</span>
+                        <span class="day-name">Lug</span>
+                    </button>
+                    <button class="day-tab" data-day="8" role="tab" aria-selected="false" id="tab-day-8">
+                        <span class="day-num">30</span>
+                        <span class="day-name">Lug</span>
+                    </button>
+                </div>
+
+                <!-- Active Day Card Details -->
+                <div class="day-detail-panel" id="day-detail-panel">
+                    <!-- Loaded dynamically via JavaScript -->
+                </div>
+            </div>
+
+            <!-- Map View (Right column, sticky) -->
+            <div class="map-sticky-wrapper">
+                <div class="map-container">
+                    <div class="map-header">
+                        <h3>Mappa Interattiva</h3>
+                        <span id="map-target-name">Visualizzazione intera isola</span>
+                    </div>
+                    <div id="map" class="interactive-map"></div>
+                    <div class="map-legend">
+                        <span class="legend-item"><span class="marker-dot hotel-dot"></span> Hotel</span>
+                        <span class="legend-item"><span class="marker-dot beach-dot"></span> Spiaggia</span>
+                        <span class="legend-item"><span class="marker-dot point-dot"></span> Attrazione/Sunset</span>
+                        <span class="legend-item"><span class="marker-dot airport-dot"></span> Aeroporto</span>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- Beaches Catalog Section -->
+        <section class="beaches-section">
+            <div class="section-header">
+                <h2>Le Tue Spiagge da Sogno</h2>
+                <p>Una selezione diversificata, da sabbia bianca caraibica a rocce rosse lunari</p>
+            </div>
+            
+            <div class="beaches-grid" id="beaches-catalog">
+                <!-- Loaded dynamically or statically -->
+            </div>
+        </section>
+
+        <!-- Scooter Guide & Tips -->
+        <section class="tips-section">
+            <div class="tips-container">
+                <div class="tips-text">
+                    <span class="section-tag"><i data-lucide="shield-check"></i> Sicurezza & Logistica</span>
+                    <h2>Guida Pratica per il tuo Viaggio in Scooter</h2>
+                    <p>Muoversi in 125cc a Minorca ti dà una libertà incredibile, ma ecco alcune cose fondamentali da sapere prima di metterti in sella:</p>
+                    
+                    <div class="tips-accordion">
+                        <details class="tip-item" open>
+                            <summary>
+                                <h4><i data-lucide="navigation"></i> Parcheggi per le Spiagge Vergini</h4>
+                                <span class="accordion-arrow"><i data-lucide="chevron-down"></i></span>
+                            </summary>
+                            <div class="tip-content">
+                                <p>Le spiagge più famose del sud (Cala Turqueta, Son Saura, Cala Macarella) hanno parcheggi a numero chiuso. In scooter avrai quasi sempre accesso assicurato e parcheggi dedicati gratuiti (spesso più vicini alla spiaggia rispetto alle auto!). Controlla comunque i cartelli digitali luminosi sulle strade principali che indicano se i parcheggi sono liberi (Libre) o completi (Completo).</p>
+                            </div>
+                        </details>
+
+                        <details class="tip-item">
+                            <summary>
+                                <h4><i data-lucide="utensils"></i> Gestione della Mezza Pensione</h4>
+                                <span class="accordion-arrow"><i data-lucide="chevron-down"></i></span>
+                            </summary>
+                            <div class="tip-content">
+                                <p>Avendo la mezza pensione in hotel (colazione e cena incluse), organizza la tua giornata in questo modo: fai una colazione abbondante all'Hotel RV Club Menorca, compra panini e molta acqua in un supermercato locale la mattina per il pranzo al sacco in spiaggia (molte spiagge vergini non hanno bar né servizi), e rientra nel tardo pomeriggio per goderti la cena in hotel senza fretta.</p>
+                            </div>
+                        </details>
+
+                        <details class="tip-item">
+                            <summary>
+                                <h4><i data-lucide="compass"></i> Vento e Condizioni del Mare</h4>
+                                <span class="accordion-arrow"><i data-lucide="chevron-down"></i></span>
+                            </summary>
+                            <div class="tip-content">
+                                <p>La regola d'oro di Minorca: se soffia vento da Nord (Tramontana), vai a visitare le spiagge del Sud (saranno piatte e cristalline). Se soffia vento da Sud, vai nelle spiagge del Nord (Cala Pregonda, Cavalleria). Controlla l'app del meteo locale ogni mattina prima di partire.</p>
+                            </div>
+                        </details>
+
+                        <details class="tip-item">
+                            <summary>
+                                <h4><i data-lucide="pocket"></i> Regole per lo Scooter 125cc</h4>
+                                <span class="accordion-arrow"><i data-lucide="chevron-down"></i></span>
+                            </summary>
+                            <div class="tip-content">
+                                <p>Per guidare un 125cc in Spagna è sufficiente la patente B italiana da almeno 3 anni. Indossa sempre il casco (obbligatorio per pilota e passeggero). Molte strade rurali che portano alle spiagge sono sterrate e presentano buche o sabbia: guida con prudenza, soprattutto in curva, e mantieni una velocità moderata.</p>
+                            </div>
+                        </details>
+                    </div>
+                </div>
+                <div class="tips-visual">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/e/e7/Punta_Nati_Lighthouse_%2837377399362%29.jpg" alt="Faro di Punta Nati" class="tips-img">
+                    <div class="scooter-badge">
+                        <i data-lucide="bike"></i>
+                        <div>
+                            <h4>Noleggio Attivo</h4>
+                            <p>24 Lug (Mattina) - 30 Lug (12:00)</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Packing List & Preparation Checklist -->
+        <section class="checklist-section">
+            <div class="section-header">
+                <h2>Cosa Portare & Preparazione</h2>
+                <p>Spunta le cose man mano che le prepari per non dimenticare nulla</p>
+            </div>
+            
+            <div class="checklist-grid">
+                <div class="checklist-card">
+                    <h3><i data-lucide="briefcase"></i> Essenziali per la Spiaggia</h3>
+                    <ul class="todo-list" id="beach-checklist">
+                        <li>
+                            <label class="todo-item">
+                                <input type="checkbox" class="todo-checkbox">
+                                <span class="todo-text">Scarpe da scoglio (fondamentali per calette rocciose come Cala en Brut)</span>
+                            </label>
+                        </li>
+                        <li>
+                            <label class="todo-item">
+                                <input type="checkbox" class="todo-checkbox">
+                                <span class="todo-text">Crema solare biodegradabile (rispetta l'ecosistema marino)</span>
+                            </label>
+                        </li>
+                        <li>
+                            <label class="todo-item">
+                                <input type="checkbox" class="todo-checkbox">
+                                <span class="todo-text">Zaino leggero da spalla per lo scooter</span>
+                            </label>
+                        </li>
+                        <li>
+                            <label class="todo-item">
+                                <input type="checkbox" class="todo-checkbox">
+                                <span class="todo-text">Borraccia termica (per acqua fresca tutto il giorno)</span>
+                            </label>
+                        </li>
+                        <li>
+                            <label class="todo-item">
+                                <input type="checkbox" class="todo-checkbox">
+                                <span class="todo-text">Maschera e boccaglio (snorkeling eccezionale ovunque)</span>
+                            </label>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="checklist-card">
+                    <h3><i data-lucide="scroll"></i> Documenti & Logistica</h3>
+                    <ul class="todo-list" id="docs-checklist">
+                        <li>
+                            <label class="todo-item">
+                                <input type="checkbox" class="todo-checkbox">
+                                <span class="todo-text">Patente di guida B (italiana, valida per scooter 125cc)</span>
+                            </label>
+                        </li>
+                        <li>
+                            <label class="todo-item">
+                                <input type="checkbox" class="todo-checkbox">
+                                <span class="todo-text">Carta d'identità in corso di validità</span>
+                            </label>
+                        </li>
+                        <li>
+                            <label class="todo-item">
+                                <input type="checkbox" class="todo-checkbox">
+                                <span class="todo-text">Prenotazione Hotel RV Club Menorca (Copia digitale/cartacea)</span>
+                            </label>
+                        </li>
+                        <li>
+                            <label class="todo-item">
+                                <input type="checkbox" class="todo-checkbox">
+                                <span class="todo-text">Voucher del Transfer aeroporto (shuttle condiviso)</span>
+                            </label>
+                        </li>
+                        <li>
+                            <label class="todo-item">
+                                <input type="checkbox" class="todo-checkbox">
+                                <span class="todo-text">Prenotazione del Noleggio Scooter</span>
+                            </label>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <h2>Minorca 2026</h2>
+                <p>Buon viaggio nell'isola della calma!</p>
+            </div>
+            <div class="footer-links">
+                <p>Creato appositamente per il tuo soggiorno dal 23 al 30 Luglio 2026</p>
+                <p class="copyright">&copy; 2026 Antigravity Travel Assistant. Tutti i diritti riservati.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Image Modal for Previews -->
+    <div id="image-modal" class="modal" aria-hidden="true">
+        <span class="modal-close" id="modal-close">&times;</span>
+        <img class="modal-content" id="modal-img" alt="Zoom immagine">
+        <div id="modal-caption" class="modal-caption"></div>
+    </div>
+
+    <!-- Script Entrypoint -->
+    <script src="data.js?v=5"></script>
+    <script src="script.js?v=5"></script>
+</body>
+</html>
