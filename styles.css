@@ -1436,7 +1436,7 @@ body {
 }
 
 /* ==========================================
-   Responsive Media Queries
+   Responsive Media Queries & Mobile Polish
    ========================================== */
 
 @media (max-width: 1024px) {
@@ -1455,38 +1455,51 @@ body {
 
 @media (max-width: 768px) {
     :root {
-        --hero-height: 80vh;
+        --hero-height: 75vh;
+    }
+    .hero-content h1 {
+        font-size: 2.5rem;
+    }
+    .hero-content p {
+        font-size: 1.05rem;
+    }
+    .container {
+        padding: 2rem 1rem;
     }
     .overview-grid {
         grid-template-columns: 1fr;
         gap: 2rem;
     }
-    .container {
-        padding: 2.5rem 1rem;
+    .wind-btn {
+        flex: 1 1 calc(50% - 0.5rem);
     }
     .quick-info-grid {
         grid-template-columns: 1fr;
         gap: 1rem;
     }
+    .beaches-grid {
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1.5rem;
+    }
     .day-tabs {
         padding-bottom: 0.5rem;
     }
     .day-tab {
-        flex: 0 0 65px;
-        height: 65px;
+        flex: 0 0 62px;
+        height: 62px;
     }
     .day-detail-panel {
-        padding: 1.5rem;
+        padding: 1.5rem 1.25rem;
     }
     .tips-container {
         grid-template-columns: 1fr;
         gap: 2rem;
     }
     .tips-section {
-        padding: 2rem 1.5rem;
+        padding: 2rem 1.25rem;
     }
     .tips-visual {
-        min-height: 250px;
+        min-height: 220px;
     }
     .checklist-grid {
         grid-template-columns: 1fr;
@@ -1497,5 +1510,32 @@ body {
     }
     .footer-links {
         text-align: center;
+    }
+    .interactive-map {
+        height: 320px;
+    }
+    .lock-card {
+        padding: 2rem 1.25rem;
+    }
+    .modal-content {
+        max-width: 95%;
+        max-height: 80vh;
+    }
+}
+
+@media (max-width: 480px) {
+    .wind-btn {
+        flex: 1 1 100%;
+    }
+    .hero-content h1 {
+        font-size: 2.1rem;
+    }
+    .panel-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .day-completed-btn {
+        width: 100%;
+        justify-content: center;
     }
 }
