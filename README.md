@@ -2,6 +2,7 @@
 
 Un'applicazione web moderna, reattiva e ricca di dettagli sviluppata per la gestione dell'itinerario di viaggio a Minorca.
 
+🤖 **Sviluppato con**: **Antigravity** & **Gemini 3.6 Flash (High)**  
 🌐 **Sito Live**: [https://michele-porta.github.io/minorca-2026/](https://michele-porta.github.io/minorca-2026/)
 
 ---
@@ -14,6 +15,14 @@ Un'applicazione web moderna, reattiva e ricca di dettagli sviluppata per la gest
 - 🔒 **Protezione con PIN & SHA-256**: Schermata d'accesso riservata e protetta da hashing crittografico a senso unico (lato client).
 - 🌓 **Tema Chiaro / Scuro (Dark Mode)**: Commutazione nativa della palette visiva e delle mappe (Carto Voyager / Carto Dark Matter).
 - 🎒 **Checklist & Progressi**: Gestione dello stato di completamento giorni, spiagge visitate e checklist bagagli/documenti con memoria in `localStorage`.
+
+---
+
+## 🛠️ Tecnologie Utilizzate
+
+- **AI Agent & Modello**: Sviluppato interamente tramite **Antigravity** con modello **Gemini 3.6 Flash (High)**.
+- **Frontend**: HTML5, Vanilla CSS3 (Custom Variables, Glassmorphism, Responsive Grid), JavaScript ES6+.
+- **Mappe & Icone**: Leaflet.js (CartoDB Voyager / Dark Matter Tiles), Lucide Icons.
 
 ---
 
