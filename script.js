@@ -450,6 +450,12 @@ const updateWindRecommendation = () => {
         } else {
             html = `<strong>💨 Scirocco/Ostro (Sud) attivo</strong>: La spiaggia di oggi è <strong>${beach.name}</strong> (Ovest). È in buone condizioni e riparata, ma se desideri spiagge vergini, oggi le calette del <strong>Nord</strong> saranno straordinarie!`;
         }
+    } else if (currentWind === 'east') {
+        if (beach.id === 'presili') {
+            html = `<strong>⚠️ Sconsigliata! Vento da EST (Levante) attivo</strong>: La spiaggia di oggi (<strong>${beach.name}</strong>) è all'estremo Est ed è esposta al vento e alle mareggiate di Levante. <br>💡 <strong>Alternativa del giorno</strong>: Oggi rimani nel versante Ovest / Sud-Ovest vicinissimo al tuo hotel (es. <strong>Cala Turqueta</strong>, <strong>Son Saura</strong> o <strong>Cala en Brut</strong>) che avranno acque calmissime!`;
+        } else {
+            html = `<strong>✅ Perfetto! Vento da EST (Levante) attivo</strong>: La spiaggia di oggi (<strong>${beach.name}</strong>) si trova a Ovest/Sud-Ovest. La massa dell'isola protegge completamente la costa ovest dal vento di Levante: mare piatto, trasparenza e bagno assicurato!`;
+        }
     }
     box.innerHTML = html;
 };
@@ -479,7 +485,7 @@ const fetchLiveWindData = async () => {
             let cardinal = 'Est';
             if (dir >= 337.5 || dir < 22.5) cardinal = 'Nord (Tramontana)';
             else if (dir >= 22.5 && dir < 67.5) cardinal = 'Nord-Est';
-            else if (dir >= 67.5 && dir < 112.5) cardinal = 'Est';
+            else if (dir >= 67.5 && dir < 112.5) cardinal = 'Est (Levante)';
             else if (dir >= 112.5 && dir < 157.5) cardinal = 'Sud-Est';
             else if (dir >= 157.5 && dir < 202.5) cardinal = 'Sud (Scirocco/Ostro)';
             else if (dir >= 202.5 && dir < 247.5) cardinal = 'Sud-Ovest';
@@ -495,6 +501,8 @@ const fetchLiveWindData = async () => {
                 setWindDirection('north');
             } else if (dir >= 112.5 && dir <= 247.5) {
                 setWindDirection('south');
+            } else if (dir >= 67.5 && dir < 112.5) {
+                setWindDirection('east');
             } else {
                 setWindDirection('none');
             }
