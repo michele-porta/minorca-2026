@@ -416,11 +416,13 @@ const updateWindRecommendation = () => {
     const beachScheduleItem = dayData.schedule.find(item => item.type === 'beach');
     if (!beachScheduleItem || !beachScheduleItem.beachId) {
         if (currentWind === 'none') {
-            box.innerHTML = `<strong>💨 Vento debole</strong>: Oggi non è prevista nessuna spiaggia in programma. Ottimo per visitare l'interno dell'isola o le città!`;
+            box.innerHTML = `<strong>💨 Vento debole</strong>: Oggi non è prevista nessuna spiaggia in programma. Ottimo per fare il check-in e una passeggiata nei dintorni dell'hotel!`;
         } else if (currentWind === 'north') {
-            box.innerHTML = `<strong>🌬️ Tramontana (Nord)</strong>: Oggi soffia vento da Nord. Le spiagge a nord avranno onde e vento forte. Consigliamo di rimanere al coperto o girare a Sud.`;
-        } else {
-            box.innerHTML = `<strong>🌬️ Scirocco/Ostro (Sud)</strong>: Vento da Sud attivo. La costa nord sarà calmissima e limpida, ideale per una passeggiata a Fornells o Favàritx!`;
+            box.innerHTML = `<strong>🌬️ Tramontana (Nord)</strong>: Oggi soffia vento da Nord. La passeggiata a Pont d'en Gil (Sud-Ovest) per il tramonto è perfettamente riparata!`;
+        } else if (currentWind === 'south') {
+            box.innerHTML = `<strong>🌬️ Scirocco/Ostro (Sud)</strong>: Vento da Sud attivo. La zona del vostro hotel (Cala'n Blanes) è ideale e riparata per la serata!`;
+        } else if (currentWind === 'east') {
+            box.innerHTML = `<strong>🌬️ Levante (Est)</strong>: Vento da Est attivo. Voi sarete nel Far Ovest dell'isola (Cala'n Blanes / Pont d'en Gil), completamente protetti dalle scogliere di ponente!`;
         }
         return;
     }
