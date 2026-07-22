@@ -60,6 +60,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setupEventListeners();
     updateProgress();
     updateWindRecommendation();
+    fetchLiveWindData();
 });
 
 // --- 3. THEME CONTROLLER ---
@@ -451,4 +452,56 @@ const updateWindRecommendation = () => {
         }
     }
     box.innerHTML = html;
+};
+
+// --- 12. AUTOMATIC LIVE WEATHER & WIND FETCH (Open-Meteo API) ---
+const setWindDirection = (windType) => {
+    currentWind = windType;
+    document.querySelectorAll('.wind-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.getAttribute('data-wind') === windType);
+    });
+    updateWindRecommendation();
+};
+
+const fetchLiveWindData = async () => {
+    const statusSpan = document.getElementById('live-wind-status');
+    if (!statusSpan) return;
+
+    try {
+        const response = await fetch('https://api.open-meteo.com/v1/forecast?latitude=39.95&longitude=4.02&current_weather=true');
+        const data = await response.json();
+
+        if (data && data.current_weather) {
+            const temp = Math.round(data.current_weather.temperature);
+            const speed = Math.round(data.current_weather.windspeed);
+            const dir = data.current_weather.winddirection;
+
+            let cardinal = 'Est';
+            if (dir >= 337.5 || dir < 22.5) cardinal = 'Nord (Tramontana)';
+            else if (dir >= 22.5 && dir < 67.5) cardinal = 'Nord-Est';
+            else if (dir >= 67.5 && dir < 112.5) cardinal = 'Est';
+            else if (dir >= 112.5 && dir < 157.5) cardinal = 'Sud-Est';
+            else if (dir >= 157.5 && dir < 202.5) cardinal = 'Sud (Scirocco/Ostro)';
+            else if (dir >= 202.5 && dir < 247.5) cardinal = 'Sud-Ovest';
+            else if (dir >= 247.5 && dir < 292.5) cardinal = 'Ovest';
+            else if (dir >= 292.5 && dir < 337.5) cardinal = 'Nord-Ovest';
+
+            statusSpan.innerHTML = `LIVE METEO MINORCA: <strong>${temp}°C</strong> • Vento <strong>${cardinal}</strong> (${speed} km/h, ${dir}°)`;
+
+            // Automatically set recommendation according to live wind direction
+            if (speed < 8) {
+                setWindDirection('none');
+            } else if (dir >= 292.5 || dir <= 67.5) {
+                setWindDirection('north');
+            } else if (dir >= 112.5 && dir <= 247.5) {
+                setWindDirection('south');
+            } else {
+                setWindDirection('none');
+            }
+        }
+    } catch (err) {
+        if (statusSpan) {
+            statusSpan.innerHTML = `Meteo live non disponibile (seleziona manualmente il vento)`;
+        }
+    }
 };

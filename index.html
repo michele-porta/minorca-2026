@@ -19,7 +19,7 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 
     <!-- Custom Stylesheet -->
-    <link rel="stylesheet" href="styles.css?v=7">
+    <link rel="stylesheet" href="styles.css?v=8">
 </head>
 <body>
     <!-- Lock Screen Overlay -->
@@ -106,7 +106,11 @@
                 <div class="overview-wind">
                     <div class="section-header">
                         <h2>Consulente Vento (Regola di Minorca)</h2>
-                        <p>Seleziona la direzione del vento di oggi per ottimizzare le spiagge</p>
+                        <p>Rilevamento meteo automatico & suggerimento spiagge ideali</p>
+                    </div>
+                    <div class="live-wind-badge" id="live-wind-badge">
+                        <i data-lucide="cloud-sun"></i>
+                        <span id="live-wind-status">Rilevamento meteo in tempo reale...</span>
                     </div>
                     <div class="wind-selector-container">
                         <div class="wind-buttons">
@@ -382,7 +386,7 @@
     </div>
 
     <!-- Script Entrypoint -->
-    <script src="data.js?v=7"></script>
-    <script src="script.js?v=7"></script>
+    <script src="data.js?v=8"></script>
+    <script src="script.js?v=8"></script>
 </body>
 </html>

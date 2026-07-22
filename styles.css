@@ -351,8 +351,25 @@ body {
     color: var(--text-muted);
 }
 
-.progress-stats strong {
+.live-wind-badge {
+    background: rgba(2, 128, 144, 0.08);
+    border: 1px dashed var(--primary-color);
+    border-radius: 30px;
+    padding: 0.5rem 1rem;
+    font-size: 0.85rem;
+    font-weight: 600;
     color: var(--primary-color);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 1rem;
+    transition: var(--transition);
+}
+
+[data-theme="dark"] .live-wind-badge {
+    background: rgba(2, 128, 144, 0.2);
+    border-color: var(--primary-hover);
+    color: #e2e8f0;
 }
 
 .wind-selector-container {
